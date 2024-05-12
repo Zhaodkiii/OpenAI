@@ -42,16 +42,12 @@ final class StreamingSession<ResultType: Codable>: NSObject, Identifiable, URLSe
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         /**
-         Usually, the Content-Type of OpenAI Stream Request Response should be "text/event-Stream",
-         but in order to prevent developers from forgetting to set this value, we only process incorrect types here, for example "text/html".
+         Usually, the Content-Type of OpenAI Stream Request Response should be "text/event-stream",
          
          For example, if user set the endpoint as https://api.openai.com instead of https://api.openai.com/v1/chat/completions ,
-         at this time, the Content-Type will be text/html, which is wrong, and we should return an error.
+         at this time, the Content-Type will be "application/json", which is wrong, and we should return an error.
          */
-        
-        let incorrectMimeTypes = [ "text/html" ]
-        
-        if error == nil, let response = task.response, let mimeType = response.mimeType, incorrectMimeTypes.contains(mimeType) {
+        if error == nil, let response = task.response, let mimeType = response.mimeType, mimeType != "text/event-stream" {
             onComplete?(self, HTTPError.incorrectContentType(mimeType, url: response.url?.absoluteString))
         } else {
             onComplete?(self, error)
@@ -119,9 +115,9 @@ extension HTTPError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .incorrectContentType(let message, let url):
-            var errorMessage = "Incorrect Content-Type: \(message)"
+            var errorMessage = "Incorrect Content-Type: \(message), acceptable type is text/event-stream."
             if let url {
-                errorMessage += ", this may be caused by a wrong endpoint: \(url)"
+                errorMessage += " This may be caused by a wrong endpoint: \(url)"
             }
             return errorMessage
         }
