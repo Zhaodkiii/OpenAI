@@ -137,6 +137,32 @@ public extension OpenAIProtocol {
         }
     }
     
+    func chatsStream(
+        query: ChatQuery,
+        url: URL
+    ) -> AsyncThrowingStream<ChatStreamResult, Error> {
+        let control = StreamControl()
+        return chatsStream(query: query, url: url, control: control)
+    }
+    
+    func chatsStream(
+        query: ChatQuery,
+        url: URL,
+        control: StreamControl
+    ) -> AsyncThrowingStream<ChatStreamResult, Error> {
+        return AsyncThrowingStream { continuation in
+            chatsStream(query: query, url: url, control: control)  { result in
+                continuation.yield(with: result)
+            } completion: { error in
+                continuation.finish(throwing: error)
+            }
+            
+            continuation.onTermination = { @Sendable termination in
+                control.cancel()
+            }
+        }
+    }
+    
     func edits(
         query: EditsQuery
     ) async throws -> EditsResult {

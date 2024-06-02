@@ -8,6 +8,7 @@
 #if canImport(Combine)
 
 import Combine
+import Foundation
 
 @available(iOS 13.0, *)
 @available(tvOS 13.0, *)
@@ -76,6 +77,25 @@ public extension OpenAIProtocol {
         let progress = PassthroughSubject<Result<ChatStreamResult, Error>, Error>()
         let control = StreamControl()
         chatsStream(query: query, control: control) { result in
+            progress.send(result)
+        } completion: { error in
+            if let error {
+                progress.send(completion: .failure(error))
+            } else {
+                progress.send(completion: .finished)
+            }
+        }
+        return progress.eraseToAnyPublisher()
+    }
+        
+    func chatsStream(query: ChatQuery, url: URL) -> AnyPublisher<Result<ChatStreamResult, Error>, Error> {
+        let control = StreamControl()
+        return chatsStream(query: query, url: url, control: control)
+    }
+    
+    func chatsStream(query: ChatQuery, url: URL, control: StreamControl) -> AnyPublisher<Result<ChatStreamResult, Error>, Error> {
+        let progress = PassthroughSubject<Result<ChatStreamResult, Error>, Error>()
+        chatsStream(query: query, url: url, control: control) { result in
             progress.send(result)
         } completion: { error in
             if let error {
