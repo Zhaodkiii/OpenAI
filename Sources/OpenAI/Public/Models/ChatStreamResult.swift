@@ -7,6 +7,7 @@
 
 import Foundation
 
+// OpenAI Docs: https://platform.openai.com/docs/api-reference/chat/streaming
 public struct ChatStreamResult: Codable, Equatable {
     
     public struct Choice: Codable, Equatable {
@@ -119,7 +120,7 @@ public struct ChatStreamResult: Codable, Equatable {
     /// A unique identifier for the chat completion. Each chunk has the same ID.
     public let id: String
     /// The object type, which is always `chat.completion.chunk`.
-    public let object: String
+    public let object: String?
     /// The Unix timestamp (in seconds) of when the chat completion was created.
     /// Each chunk has the same timestamp.
     public let created: TimeInterval
