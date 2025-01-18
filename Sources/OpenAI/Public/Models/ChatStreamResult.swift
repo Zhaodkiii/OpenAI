@@ -9,7 +9,23 @@ import Foundation
 
 // OpenAI Docs: https://platform.openai.com/docs/api-reference/chat/streaming
 public struct ChatStreamResult: Codable, Equatable {
-    
+
+    public init(
+        id: String,
+        object: String?,
+        created: TimeInterval,
+        model: String,
+        choices: [Choice],
+        systemFingerprint: String? = nil
+    ) {
+        self.id = id
+        self.object = object
+        self.created = created
+        self.model = model
+        self.choices = choices
+        self.systemFingerprint = systemFingerprint
+    }
+
     public struct Choice: Codable, Equatable {
         public typealias FinishReason = ChatResult.Choice.FinishReason
 
