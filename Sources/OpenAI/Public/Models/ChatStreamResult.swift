@@ -12,7 +12,7 @@ public struct ChatStreamResult: Codable, Equatable {
 
     public init(
         id: String,
-        object: String?,
+        object: String? = "chat.completion.chunk",
         created: TimeInterval,
         model: String,
         choices: [Choice],
@@ -29,8 +29,21 @@ public struct ChatStreamResult: Codable, Equatable {
     public struct Choice: Codable, Equatable {
         public typealias FinishReason = ChatResult.Choice.FinishReason
 
+        public init(index: Int?, delta: ChoiceDelta, finishReason: FinishReason?, logprobs: ChoiceLogprobs?) {
+            self.index = index
+            self.delta = delta
+            self.finishReason = finishReason
+            self.logprobs = logprobs
+        }
+
         public struct ChoiceDelta: Codable, Equatable {
             public typealias Role = ChatQuery.ChatCompletionMessageParam.Role
+
+            public init(content: String?, role: Role?, toolCalls: [ChoiceDeltaToolCall]?) {
+                self.content = content
+                self.role = role
+                self.toolCalls = toolCalls
+            }
 
             /// The contents of the chunk message.
             public let content: String?
