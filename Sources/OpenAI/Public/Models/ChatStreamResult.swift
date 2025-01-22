@@ -35,7 +35,7 @@ public struct ChatStreamResult: Codable, Equatable {
         public init(
             index: Int? = 0,
             delta: ChoiceDelta,
-            finishReason: FinishReason? = .stop,
+            finishReason: FinishReason? = nil,
             logprobs: ChoiceLogprobs? = nil
         ) {
             self.index = index
