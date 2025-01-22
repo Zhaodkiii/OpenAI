@@ -1,6 +1,6 @@
 //
 //  ChatResult.swift
-//  
+//
 //
 //  Created by Sergii Kryvoblotskyi on 02/04/2023.
 //
@@ -78,6 +78,12 @@ public struct ChatResult: Codable, Equatable {
 
     public struct CompletionUsage: Codable, Equatable {
 
+        public init(completionTokens: Int, promptTokens: Int, totalTokens: Int) {
+            self.completionTokens = completionTokens
+            self.promptTokens = promptTokens
+            self.totalTokens = totalTokens
+        }
+
         /// Number of tokens in the generated completion.
         public let completionTokens: Int
         /// Number of tokens in the prompt.
@@ -122,7 +128,8 @@ public struct ChatResult: Codable, Equatable {
 extension ChatQuery.ChatCompletionMessageParam {
 
     public init(from decoder: Decoder) throws {
-        let messageContainer = try decoder.container(keyedBy: Self.ChatCompletionMessageParam.CodingKeys.self)
+        let messageContainer = try decoder.container(
+            keyedBy: Self.ChatCompletionMessageParam.CodingKeys.self)
         switch try messageContainer.decode(Role.self, forKey: .role) {
         case .system:
             self = try .system(.init(from: decoder))
@@ -149,6 +156,10 @@ extension ChatQuery.ChatCompletionMessageParam.ChatCompletionUserMessageParam.Co
             self = .vision(vision)
             return
         } catch {}
-        throw DecodingError.typeMismatch(Self.self, .init(codingPath: [Self.CodingKeys.string, Self.CodingKeys.vision], debugDescription: "Content: expected String || Vision"))
+        throw DecodingError.typeMismatch(
+            Self.self,
+            .init(
+                codingPath: [Self.CodingKeys.string, Self.CodingKeys.vision],
+                debugDescription: "Content: expected String || Vision"))
     }
 }

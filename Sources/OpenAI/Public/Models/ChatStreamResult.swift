@@ -9,6 +9,7 @@ import Foundation
 
 // OpenAI Docs: https://platform.openai.com/docs/api-reference/chat/streaming
 public struct ChatStreamResult: Codable, Equatable {
+    public typealias CompletionUsage = ChatResult.CompletionUsage
 
     public init(
         id: String,
@@ -16,7 +17,8 @@ public struct ChatStreamResult: Codable, Equatable {
         created: TimeInterval,
         model: String,
         choices: [Choice],
-        systemFingerprint: String? = nil
+        systemFingerprint: String? = nil,
+        usage: CompletionUsage? = nil
     ) {
         self.id = id
         self.object = object
@@ -24,6 +26,7 @@ public struct ChatStreamResult: Codable, Equatable {
         self.model = model
         self.choices = choices
         self.systemFingerprint = systemFingerprint
+        self.usage = usage
     }
 
     public struct Choice: Codable, Equatable {
@@ -160,6 +163,8 @@ public struct ChatStreamResult: Codable, Equatable {
     public let choices: [Choice]
     /// This fingerprint represents the backend configuration that the model runs with. Can be used in conjunction with the `seed` request parameter to understand when backend changes have been made that might impact determinism.
     public let systemFingerprint: String?
+    /// The usage information for the completion.
+    public let usage: CompletionUsage?
 
     public enum CodingKeys: String, CodingKey {
         case id
@@ -168,5 +173,6 @@ public struct ChatStreamResult: Codable, Equatable {
         case model
         case choices
         case systemFingerprint = "system_fingerprint"
+        case usage
     }
 }
