@@ -32,7 +32,12 @@ public struct ChatStreamResult: Codable, Equatable {
     public struct Choice: Codable, Equatable {
         public typealias FinishReason = ChatResult.Choice.FinishReason
 
-        public init(index: Int?, delta: ChoiceDelta, finishReason: FinishReason?, logprobs: ChoiceLogprobs?) {
+        public init(
+            index: Int? = 0,
+            delta: ChoiceDelta,
+            finishReason: FinishReason? = .stop,
+            logprobs: ChoiceLogprobs? = nil
+        ) {
             self.index = index
             self.delta = delta
             self.finishReason = finishReason
@@ -42,7 +47,11 @@ public struct ChatStreamResult: Codable, Equatable {
         public struct ChoiceDelta: Codable, Equatable {
             public typealias Role = ChatQuery.ChatCompletionMessageParam.Role
 
-            public init(content: String?, role: Role?, toolCalls: [ChoiceDeltaToolCall]?) {
+            public init(
+                content: String? = nil,
+                role: Role? = nil,
+                toolCalls: [ChoiceDeltaToolCall]? = nil
+            ) {
                 self.content = content
                 self.role = role
                 self.toolCalls = toolCalls
