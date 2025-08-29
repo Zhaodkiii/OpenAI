@@ -9,6 +9,8 @@ import DemoChat
 import OpenAI
 import SwiftUI
 
+
+
 struct APIProvidedView: View {
     @Binding var apiKey: String
     @StateObject var chatStore: ChatStore
